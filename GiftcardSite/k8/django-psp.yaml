@@ -9,12 +9,13 @@ spec:
   supplementalGroups:
     rule: RunAsAny
   runAsUser:
-    rule: RunAsAny
+    rule: MustRunAsNonRoot
   fsGroup:
     rule: RunAsAny
   volumes:
     - "*"
-  hostIPC: true
-  hostPID: true
-  hostNetwork: true
-  allowPrivilegeEscalation: true
+  hostIPC: false
+  hostPID: false
+  hostNetwork: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities: [NET_RAW]
