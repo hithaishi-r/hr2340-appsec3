@@ -15,6 +15,9 @@ spec:
       labels:
         pod: assignment3-django-deploy
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: assignment3-django-deploy
           image: nyuappsec/assign3:v0

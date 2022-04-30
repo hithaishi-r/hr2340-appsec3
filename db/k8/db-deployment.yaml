@@ -14,6 +14,9 @@ spec:
         app: mysql-container
         tier: backend
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: mysql-container
           image: nyuappsec/assign3-db:v0
