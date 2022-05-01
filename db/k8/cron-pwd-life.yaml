@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-pwd-life
+  namespace: giftcardsite
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mysql-container
+            image: nyuappsec/assign3-db:v0
+            args:
+              - /bin/sh
+              - -c
+              - mysql -h 172.17.0.5 -P 3306 -u root -p$MYSQL_ROOT_PASSWORD -e "SELECT variable_name, variable_value FROM performance_schema.global_variables WHERE variable_name LIKE 'default_password_lifetime';"
+
+            env:
+
+              - name: MYSQL_DATABASE
+                value: GiftcardSiteDB
+
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: db-secret
+                    key: mysql_root_password
+
+            ports:
+              - containerPort: 3306
+            volumeMounts:
+              - name: mysql-volume-mount
+                mountPath: /var/lib/mysql
+
+          restartPolicy: OnFailure
+
+          volumes:
+            - name: mysql-volume-mount
+              persistentVolumeClaim:
+                claimName: mysql-pvc
